@@ -2,45 +2,41 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chats
+namespace ChatClient
 {
     class Program
     {
         static void Main(string[] args)
         {
-
-            TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 8080);
-            server.Start();
-            Console.WriteLine("Waiting for a client...");
             while (true)
             {
                 try
                 {
-                    TcpClient client = server.AcceptTcpClient();
-                    Console.WriteLine("Client was connected. Waititng for activity...");
+                    TcpClient client = new TcpClient();
+                    client.Connect("127.0.0.1", 8080);
+
+                    StringBuilder response = new StringBuilder();
                     NetworkStream stream = client.GetStream();
                     BinaryReader reader = new BinaryReader(stream);
                     BinaryWriter writer = new BinaryWriter(stream);
 
                     while (true)
                     {
-                        string data = reader.ReadString();
-                        Console.WriteLine($"Client: {data}");
-                        writer.Write(data);
-                        Console.WriteLine($"Server: {data}");
+                        Console.WriteLine("Server:" + reader.ReadString());
+                        Console.Write("Client:");
+                        writer.Write(Console.ReadLine());
+                        Console.WriteLine("Server:" + reader.ReadString());
                     }
                 }
                 catch
                 {
-                    Console.WriteLine("Client was disconnected.");
+                    Console.WriteLine("Cannot connect to server.");
                 }
             }
-
         }
     }
 }
