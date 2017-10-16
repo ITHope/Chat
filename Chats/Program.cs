@@ -11,34 +11,51 @@ namespace Chats
 {
     class Program
     {
+        static void TCPConnection(TcpListener listener)
+        {
+            try
+            {
+                TcpClient client = listener.AcceptTcpClient();
+
+                Console.WriteLine("Connection: Client connected.");
+
+                NetworkStream stream = client.GetStream();
+
+                BinaryReader reader = new BinaryReader(stream);
+                BinaryWriter writer = new BinaryWriter(stream);
+
+                while (true)
+                {
+                    string data = reader.ReadString();
+
+                    Console.WriteLine($"Client: {data}");
+
+                    writer.Write(data);
+
+                    Console.WriteLine($"Server: {data}");
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Client was disconnected.");
+            }
+        }
+
+
         static void Main(string[] args)
         {
 
-            TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 8080);
-            server.Start();
-            Console.WriteLine("Waiting for a client...");
+            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+            int port = 8080;
+
+            TcpListener listener = new TcpListener(ipAddress, port);
+            listener.Start();
+
+            Console.WriteLine("Connection: Waiting for a client");
+
             while (true)
             {
-                try
-                {
-                    TcpClient client = server.AcceptTcpClient();
-                    Console.WriteLine("Client was connected. Waititng for activity...");
-                    NetworkStream stream = client.GetStream();
-                    BinaryReader reader = new BinaryReader(stream);
-                    BinaryWriter writer = new BinaryWriter(stream);
-
-                    while (true)
-                    {
-                        string data = reader.ReadString();
-                        Console.WriteLine($"Client: {data}");
-                        writer.Write(data);
-                        Console.WriteLine($"Server: {data}");
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine("Client was disconnected.");
-                }
+                TCPConnection(listener);
             }
 
         }

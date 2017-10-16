@@ -25,12 +25,12 @@ namespace ChatServerMulti
         public void Start()
         {
             server.Start();
-            Console.WriteLine("Waiting for a clients...");
+            Console.WriteLine("Connection: Waiting for a clients");
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
                 clients.Add(client, ++count);
-                new BinaryWriter(client.GetStream()).Write("You've connected to server!");
+                new BinaryWriter(client.GetStream()).Write("Connection: Connected to server!");
                 Console.WriteLine($"Client {clients[client]} have connected!");
                 ThreadPool.QueueUserWorkItem(DoWork, client);
             }

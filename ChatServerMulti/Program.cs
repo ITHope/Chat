@@ -14,7 +14,10 @@ namespace ChatServerMulti
     {
         static void Main(string[] args)
         {
-            ChatServer server = new ChatServer("127.0.0.1", 9050);
+            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+            int port = 8080;
+
+            ChatServer server = new ChatServer(ipAddress.ToString(), port);
             server.Start();
         }
     }
