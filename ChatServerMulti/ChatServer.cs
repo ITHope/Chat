@@ -18,7 +18,9 @@ namespace ChatServerMulti
 
         public ChatServer(string local, int port)
         {
-            server = new TcpListener(IPAddress.Parse(local), port);
+            IPAddress ipAddress = IPAddress.Parse(local);
+
+            server = new TcpListener(ipAddress, port);
             clients = new Dictionary<TcpClient, int>();
         }
 
@@ -31,7 +33,8 @@ namespace ChatServerMulti
                 TcpClient client = server.AcceptTcpClient();
                 clients.Add(client, ++count);
                 new BinaryWriter(client.GetStream()).Write("Connection: Connected to server!");
-                Console.WriteLine($"Client {clients[client]} have connected!");
+
+                Console.WriteLine($"Client {clients[client]} connected!");
                 ThreadPool.QueueUserWorkItem(DoWork, client);
             }
         }
@@ -45,8 +48,7 @@ namespace ChatServerMulti
 
                     string data = new BinaryReader((obj as TcpClient).GetStream()).ReadString();
                     Console.WriteLine($"Received from client {clients[obj as TcpClient]}: {data}");
-
-
+                    
                     foreach (TcpClient client in clients.Keys)
                     {
                         new BinaryWriter(client.GetStream()).Write(data);

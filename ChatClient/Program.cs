@@ -11,7 +11,7 @@ namespace ChatClient
 {
     class Program
     {
-        static void Connection()
+        static void TCPConnection()
         {
             try
             {
@@ -21,7 +21,7 @@ namespace ChatClient
                 TcpClient client = new TcpClient();
                 client.Connect(ipAddress, port);
 
-                StringBuilder response = new StringBuilder();
+                StringBuilder message = new StringBuilder();
                 NetworkStream stream = client.GetStream();
 
                 BinaryReader reader = new BinaryReader(stream);
@@ -49,7 +49,7 @@ namespace ChatClient
         {
             while (true)
             {
-                Connection();
+                TCPConnection();
             }
         }
     }
