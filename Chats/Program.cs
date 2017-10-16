@@ -37,7 +37,7 @@ namespace Chats
             }
             catch
             {
-                Console.WriteLine("Client was disconnected.");
+                Console.WriteLine("Connection: Client was disconnected.");
             }
         }
 
